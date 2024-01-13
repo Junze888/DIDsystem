@@ -14,6 +14,7 @@ import org.fisco.bcos.sdk.crypto.keypair.CryptoKeyPair;
 import org.fisco.bcos.sdk.crypto.keypair.ECDSAKeyPair;
 import org.fisco.bcos.sdk.crypto.keypair.SM2KeyPair;
 
+import org.fisco.bcos.sdk.model.TransactionReceipt;
 import org.fisco.bcos.sdk.transaction.manager.AssembleTransactionProcessor;
 import org.fisco.bcos.sdk.transaction.manager.TransactionProcessorFactory;
 
@@ -56,10 +57,10 @@ public class DemoPkey {
                                     .getContextClassLoader()
                                     .getResource("bin/ecc/School_Token.bin"));
 
-//        AssembleTransactionProcessor txProcessor =
-//                TransactionProcessorFactory.createAssembleTransactionProcessor(
-//                        client, client.getCryptoSuite().createKeyPair(systemConfig.getHexPrivateKey()),"src/main/resources/abi/", "src/main/resources/bin/ecc/");
-//        assertNotNull(txProcessor);
+        AssembleTransactionProcessor txProcessor =
+                TransactionProcessorFactory.createAssembleTransactionProcessor(
+                        client, client.getCryptoSuite().createKeyPair(systemConfig.getHexPrivateKey()),"src/main/resources/abi/", "src/main/resources/bin/ecc/");
+        assertNotNull(txProcessor);
 
 
         //CallResponse callResponse= txProcessor.sendCallByContractLoader("ERC4907","0x102fe0badb3b6768fe069f5930cc61d221e61e38", "userOf", bo.toArgs());
@@ -77,9 +78,9 @@ public class DemoPkey {
 //        System.out.println(callResponse.getReturnCode() + "  "+callResponse.getValues());
 
 
-//        ERC4907SetUserInputBO bo = new ERC4907SetUserInputBO(BigInteger.valueOf(11), "0x32d7a613aef6e058cdd160a6ed20325de34cd9cc", BigInteger.valueOf(100000));
-//        TransactionResponse transactionResponse = txProcessor.sendTransactionAndGetResponseByContractLoader("ERC4907", "0x102fe0badb3b6768fe069f5930cc61d221e61e38", "setUser", bo.toArgs());
-//        System.out.println(transactionResponse);
+        ERC4907SetUserInputBO bo = new ERC4907SetUserInputBO(BigInteger.valueOf(11), "0x32d7a613aef6e058cdd160a6ed20325de34cd9cc", BigInteger.valueOf(100000));
+        TransactionResponse transactionResponse = txProcessor.sendTransactionAndGetResponseByContractLoader("ERC4907", "0x102fe0badb3b6768fe069f5930cc61d221e61e38", "setUser", bo.toArgs());
+        System.out.println(transactionResponse);
 
 
 
@@ -90,9 +91,9 @@ public class DemoPkey {
 //        TransactionReceipt transactionReceipt = txProcessor.sendTransactionAndGetReceipt("0x102fe0badb3b6768fe069f5930cc61d221e61e38", abiEncoded, client.getCryptoSuite().getCryptoKeyPair());
 //        System.out.println(transactionReceipt);
 
-        WeIdService weIdService = new WeIdServiceImpl();
-        assertNotNull(weIdService);
-        System.out.println(weIdService.getWeIdDocument("did:weid:666:0x4fa8596c14db55ba312e694eb23f97cf69f71b07"));
+//        WeIdService weIdService = new WeIdServiceImpl();
+//        assertNotNull(weIdService);
+//        System.out.println(weIdService.getWeIdDocument("did:weid:666:0x4fa8596c14db55ba312e694eb23f97cf69f71b07"));
     }
 
 
