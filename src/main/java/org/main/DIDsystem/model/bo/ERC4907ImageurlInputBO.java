@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ERC4907ImageurlInputBO {
+public class ERC4907ImageurlInputBO extends BO{
   private BigInteger tokenId;
 
   public List<Object> toArgs() {

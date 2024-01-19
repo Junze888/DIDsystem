@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class School_TokenImageurlInputBO {
+public class School_TokenImageurlInputBO extends BO{
   private BigInteger tokenId;
 
   public List<Object> toArgs() {

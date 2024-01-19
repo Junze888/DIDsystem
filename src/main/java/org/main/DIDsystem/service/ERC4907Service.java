@@ -43,10 +43,10 @@ public class ERC4907Service {
 
   AssembleTransactionProcessor txProcessor;
 
-  @PostConstruct
-  public void init() throws Exception {
-    this.txProcessor = TransactionProcessorFactory.createAssembleTransactionProcessor(this.client, this.client.getCryptoSuite().getCryptoKeyPair());
-  }
+//  @PostConstruct
+//  public void init() throws Exception {
+//    this.txProcessor = TransactionProcessorFactory.createAssembleTransactionProcessor(this.client, this.client.getCryptoSuite().getCryptoKeyPair());
+//  }
 
   public CallResponse userExpireTime(ERC4907UserExpireTimeInputBO input) throws Exception {
     return this.txProcessor.sendCall(this.client.getCryptoSuite().getCryptoKeyPair().getAddress(), this.address, ABI, "userExpireTime", input.toArgs());

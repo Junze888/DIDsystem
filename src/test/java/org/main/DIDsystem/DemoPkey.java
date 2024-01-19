@@ -1,5 +1,6 @@
 package org.main.DIDsystem;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.AbstractList;
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.Arrays;
 
 import com.webank.weid.rpc.WeIdService;
 import com.webank.weid.service.impl.WeIdServiceImpl;
+import org.apache.pdfbox.util.Hex;
 import org.fisco.bcos.sdk.abi.ABICodec;
 import org.fisco.bcos.sdk.client.Client;
 import org.fisco.bcos.sdk.crypto.keypair.CryptoKeyPair;
@@ -115,7 +117,6 @@ public class DemoPkey {
         System.out.println("sm2 address :"+sm2KeyPair.getAddress());
 
     }
-
 
 
 }

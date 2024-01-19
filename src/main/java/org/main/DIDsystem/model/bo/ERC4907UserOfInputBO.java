@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ERC4907UserOfInputBO {
+public class ERC4907UserOfInputBO extends BO{
   private BigInteger tokenId;
 
   public List<Object> toArgs() {

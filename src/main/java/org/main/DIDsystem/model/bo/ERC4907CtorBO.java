@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ERC4907CtorBO {
+public class ERC4907CtorBO extends BO{
   private String name_;
 
   private String symbol_;

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ERC4907TransferInputBO {
+public class ERC4907TransferInputBO extends BO{
   private String from;
 
   private String to;

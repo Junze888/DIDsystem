@@ -5,6 +5,7 @@ import java.lang.String;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PostConstruct;
 import lombok.Data;
@@ -14,6 +15,8 @@ import org.main.DIDsystem.config.SystemConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import static org.main.DIDsystem.raw.UsersCache.serviceMap;
 
 @Configuration
 @Data
@@ -25,7 +28,7 @@ public class ServiceManager {
   @Autowired
   private Client client;
 
-  List<String> hexPrivateKeyList;
+  public static List<String> hexPrivateKeyList;
 
   @PostConstruct
   public void init() {
@@ -37,9 +40,9 @@ public class ServiceManager {
    */
   @Bean("School_TokenService")
   public Map<String, School_TokenService> initSchool_TokenServiceManager() throws Exception {
-    Map<String, School_TokenService> serviceMap = new ConcurrentHashMap<>(this.hexPrivateKeyList.size());
-    for (int i = 0; i < this.hexPrivateKeyList.size(); i++) {
-    	String privateKey = this.hexPrivateKeyList.get(i);
+    Map<String, School_TokenService> serviceMap = new ConcurrentHashMap<>(hexPrivateKeyList.size());
+    for (int i = 0; i < hexPrivateKeyList.size(); i++) {
+    	String privateKey = hexPrivateKeyList.get(i);
     	if (privateKey.startsWith("0x") || privateKey.startsWith("0X")) {
     		privateKey = privateKey.substring(2);
     	}
@@ -62,14 +65,15 @@ public class ServiceManager {
     return serviceMap;
   }
 
-  /**
+	/**
    * @notice: must use @Qualifier("ERC4907Service") with @Autowired to get this Bean
    */
+
+
   @Bean("ERC4907Service")
   public Map<String, ERC4907Service> initERC4907ServiceManager() throws Exception {
-    Map<String, ERC4907Service> serviceMap = new ConcurrentHashMap<>(this.hexPrivateKeyList.size());
-    for (int i = 0; i < this.hexPrivateKeyList.size(); i++) {
-    	String privateKey = this.hexPrivateKeyList.get(i);
+    for (int i = 0; i < hexPrivateKeyList.size(); i++) {
+    	String privateKey = hexPrivateKeyList.get(i);
     	if (privateKey.startsWith("0x") || privateKey.startsWith("0X")) {
     		privateKey = privateKey.substring(2);
     	}
@@ -91,4 +95,40 @@ public class ServiceManager {
     log.info("++++++++ERC4907Service map:{}", serviceMap);
     return serviceMap;
   }
+
+	public  void addUser(String privateKey) throws Exception {
+		// 添加私钥到 hexPrivateKeyList
+		hexPrivateKeyList.add(privateKey);
+		// 创建新的 School_TokenService 实例
+		ERC4907Service erc4907Service = new ERC4907Service();
+		// 设置 School_TokenService 的属性
+		erc4907Service.setAddress(this.config.getContract().getERC4907Address());
+		erc4907Service.setClient(this.client);
+		// 创建 CryptoKeyPair 对象
+		org.fisco.bcos.sdk.crypto.CryptoSuite cryptoSuite = new org.fisco.bcos.sdk.crypto.CryptoSuite(this.client.getCryptoType());
+		org.fisco.bcos.sdk.crypto.keypair.CryptoKeyPair cryptoKeyPair = cryptoSuite.createKeyPair(privateKey);
+		// 创建 AssembleTransactionProcessor 对象
+		org.fisco.bcos.sdk.transaction.manager.AssembleTransactionProcessor txProcessor = org.fisco.bcos.sdk.transaction.manager.TransactionProcessorFactory.createAssembleTransactionProcessor(this.client, cryptoKeyPair);
+		// 设置 School_TokenService 的 txProcessor 属性
+		erc4907Service.setTxProcessor(txProcessor);
+
+		// 将新的 School_TokenService 添加到 serviceMap
+		String userAddress = cryptoKeyPair.getAddress();
+		serviceMap.put(userAddress, erc4907Service);
+	}
+
+	public void removeUser(String privateKey) {
+		// 从 hexPrivateKeyList 中移除私钥
+		hexPrivateKeyList.remove(privateKey);
+
+		// 根据私钥获取对应的用户地址
+		org.fisco.bcos.sdk.crypto.CryptoSuite cryptoSuite = new org.fisco.bcos.sdk.crypto.CryptoSuite(this.client.getCryptoType());
+		org.fisco.bcos.sdk.crypto.keypair.CryptoKeyPair cryptoKeyPair = cryptoSuite.createKeyPair(privateKey);
+		String userAddress = cryptoKeyPair.getAddress();
+
+		// 从 serviceMap 中移除对应的 School_TokenService
+		serviceMap.remove(userAddress);
+	}
+
+
 }

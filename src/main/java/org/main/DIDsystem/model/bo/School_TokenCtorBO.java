@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class School_TokenCtorBO {
+public class School_TokenCtorBO extends BO{
   private String name_;
 
   private String symbol_;

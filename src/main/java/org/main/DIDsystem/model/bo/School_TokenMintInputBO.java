@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class School_TokenMintInputBO {
+public class School_TokenMintInputBO extends BO{
   private String to;
 
   private BigInteger tokenId;

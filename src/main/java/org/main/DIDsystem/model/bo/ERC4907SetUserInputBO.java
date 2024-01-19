@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ERC4907SetUserInputBO {
+public class ERC4907SetUserInputBO extends BO{
   private BigInteger tokenId;
 
   private String user;

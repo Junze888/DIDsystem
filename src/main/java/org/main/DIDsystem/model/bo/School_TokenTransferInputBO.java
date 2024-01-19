@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class School_TokenTransferInputBO {
+public class School_TokenTransferInputBO extends BO{
   private String from;
 
   private String to;
