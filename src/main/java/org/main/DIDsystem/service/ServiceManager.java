@@ -96,9 +96,8 @@ public class ServiceManager {
     return serviceMap;
   }
 
-	public  void addUser(String privateKey) throws Exception {
+	public void addUser(String privateKey) throws Exception {
 		// 添加私钥到 hexPrivateKeyList
-		hexPrivateKeyList.add(privateKey);
 		// 创建新的 School_TokenService 实例
 		ERC4907Service erc4907Service = new ERC4907Service();
 		// 设置 School_TokenService 的属性
@@ -118,9 +117,6 @@ public class ServiceManager {
 	}
 
 	public void removeUser(String privateKey) {
-		// 从 hexPrivateKeyList 中移除私钥
-		hexPrivateKeyList.remove(privateKey);
-
 		// 根据私钥获取对应的用户地址
 		org.fisco.bcos.sdk.crypto.CryptoSuite cryptoSuite = new org.fisco.bcos.sdk.crypto.CryptoSuite(this.client.getCryptoType());
 		org.fisco.bcos.sdk.crypto.keypair.CryptoKeyPair cryptoKeyPair = cryptoSuite.createKeyPair(privateKey);

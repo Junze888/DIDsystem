@@ -59,7 +59,7 @@ public class UserService {
         return "weId:" + weId + "\n"+ "PubKey:" + publicKey + "\n" + "priKey:" + KeyFactory.toHexKey(privateKey);
     }
 
-    String getDIDDocument(String DID){
+    public String getDIDDocument(String DID){
         ResponseData<String> response = weIdService.getWeIdDocumentJson(DID);
         return response.getResult();
     }

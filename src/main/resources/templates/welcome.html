@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品展示页面</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css">
+    <!-- 引入 jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- 引入 Animate.css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css">
+<style>
+    /* 样式表样例，根据实际需求修改 */
+    body {
+        background-image: url('./bg2.jpg');
+        background-repeat: no-repeat;
+        background-size: cover;
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        z-index: -1;
+    }
+
+    #userPopup {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 300px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        z-index: 1000;
+    }
+
+    /* Adjusted style to add margin-left for the main content */
+    #mainContent {
+        padding: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        margin-left: 300px; /* Width of the sidebar */
+    }
+
+    .product-card {
+        width: 300px;
+        margin-bottom: 20px;
+        padding: 10px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-card img {
+        width: 100%;
+        height: auto;
+    }
+
+    /* Rest of your styles remain unchanged */
+
+
+    /* 引入其他样式或者自定义动画效果 */
+
+</style>
+</head>
+
+<body>
+
+<!-- 侧边用户弹窗 -->
+<div id="userPopup" class="animated slideInLeft">
+    <!-- 用户信息显示在这里 -->
+    <div id="userInfo"></div>
+</div>
+
+<!-- 主要商品展示区域 -->
+
+<div id="mainContent">
+    <!-- 商品信息将在这里动态渲染 -->
+    <!-- 示例：第一个商品 -->
+    <div class="product-card" id="product1">
+        <img src="./bg.jpg" alt="Product 1">
+        <h3>课室 1</h3>
+        <p>管理者：</p>
+        <p>使用者：</p>
+        <p>使用时间：</p>
+        <button class="details-btn" onclick="getProductDetails(1)">Details</button>
+    </div>
+
+    <!-- 重复展示其他商品 -->
+    <!-- ... -->
+    <div class="product-card" id="product2">
+        <img src="./bg.jpg" alt="Product 1">
+        <h3>课室 2</h3>
+        <p>管理者：</p>
+        <p>使用者：</p>
+        <p>使用时间：</p>
+        <button class="details-btn" onclick="getProductDetails(2)">Details</button>
+    </div>
+    <div class="product-card" id="product3">
+        <img src="./bg.jpg" alt="Product 1">
+        <h3>课室 2</h3>
+        <p>管理者：</p>
+        <p>使用者：</p>
+        <p>使用时间：</p>
+        <button class="details-btn" onclick="getProductDetails(3)">Details</button>
+    </div>
+
+</div>
+
+
+<!-- 引入自定义脚本 -->
+<script>
+    // your_script.js
+    // 获取 URL 中的参数
+    const urlParams = new URLSearchParams(window.location.search);
+    const DID = urlParams.get('DID');
+    const priKey = urlParams.get('priKey');
+
+    // 在控制台输出，你可以根据需要使用这些值
+    console.log('DID:', DID);
+    console.log('priKey:', priKey);
+
+    function showUserInfo(user) {
+        const userInfo = $('#userInfo');
+
+        // 构建用户信息 HTML
+        const userHtml = `<h2>${user.username}</h2>
+                      <p>Email: ${user.email}</p>`;
+
+        // 将用户信息渲染到侧边弹窗
+        userInfo.html(userHtml);
+
+        // 显示用户弹窗
+        $('#userPopup').css('display', 'block');
+    }
+
+    $(document).ready(function() {
+        // 发送 POST 请求获取商品数据
+        $.ajax({
+            url: '/Transaction', // 请替换为实际的后端接口地址
+            method: 'POST',
+            success: function(productData) {
+                // 渲染商品信息
+                renderProducts(productData);
+            },
+            error: function(error) {
+                console.error('Error fetching product data:', error);
+            }
+        });
+
+        // 模拟用户登录后显示用户信息
+        showUserInfo({
+            username: DID,
+            email: 'June@SZU',
+            // 其他用户信息...
+        });
+    });
+    // 渲染商品信息
+    function renderProducts(productData) {
+        const mainContent = $('#mainContent');
+
+        // 循环遍历商品数据，渲染到页面
+        productData.slice(0, 10).forEach((product, index) => {
+            const productCard = `<div class="product-card" id="product${index + 1}">
+                                <img src="placeholder.jpg" alt="${product.name}">
+                                <h3>${product.name}</h3>
+                                <p>${product.description}</p>
+                                <button class="details-btn" onclick="getProductDetails(${index + 1})">Details</button>
+                            </div>`;
+            mainContent.append(productCard);
+        });
+    }
+
+    // 获取商品详情
+    function getProductDetails(productId) {
+        // 发送 POST 请求，获取商品详情数据
+        $.ajax({
+            url: '/Transaction', // 请替换为实际的后端接口地址
+            method: 'POST',
+            data: { Address: DID, function: 'ownerOf', tokenId: '11'  },
+            success: function(productDetails) {
+                // 处理商品详情数据，例如更新弹窗中的内容
+                updateProductDetails(productId, productDetails);
+            },
+            error: function(error) {
+                console.error('Error fetching product details:', error);
+            }
+        });
+    }
+
+    // 更新商品详情弹窗内容
+    function updateProductDetails(productId, details) {
+        const productCard = document.getElementById('product' + productId);
+
+        // Update product information based on received details
+        productCard.querySelector('h3').innerText = details;
+        productCard.querySelector('p').innerText = details;
+        // You can update other elements as needed
+
+        // Optionally, you can add animations or other effects
+    }
+
+</script>
+
+</body>
+</html>

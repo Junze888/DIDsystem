@@ -1,41 +1,23 @@
 package org.main.DIDsystem;
 
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-
-import com.webank.weid.rpc.WeIdService;
-import com.webank.weid.service.impl.WeIdServiceImpl;
-import org.apache.pdfbox.util.Hex;
-import org.fisco.bcos.sdk.abi.ABICodec;
+import lombok.extern.slf4j.Slf4j;
 import org.fisco.bcos.sdk.client.Client;
 import org.fisco.bcos.sdk.crypto.keypair.CryptoKeyPair;
 import org.fisco.bcos.sdk.crypto.keypair.ECDSAKeyPair;
 import org.fisco.bcos.sdk.crypto.keypair.SM2KeyPair;
-
-import org.fisco.bcos.sdk.model.TransactionReceipt;
 import org.fisco.bcos.sdk.transaction.manager.AssembleTransactionProcessor;
 import org.fisco.bcos.sdk.transaction.manager.TransactionProcessorFactory;
-
-
 import org.fisco.bcos.sdk.transaction.model.dto.TransactionResponse;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.main.DIDsystem.config.SystemConfig;
 import org.main.DIDsystem.model.bo.ERC4907SetUserInputBO;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import lombok.extern.slf4j.Slf4j;
-
-import org.junit.Test;
-
-
-
+import java.math.BigInteger;
+import java.util.ArrayList;
 
 import static org.junit.Assert.assertNotNull;
 
