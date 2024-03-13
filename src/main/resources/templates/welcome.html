@@ -1,201 +1,286 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>商品展示页面</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css">
-    <!-- 引入 jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- 引入 Animate.css -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css">
-<style>
-    /* 样式表样例，根据实际需求修改 */
-    body {
-        background-image: url('./bg2.jpg');
-        background-repeat: no-repeat;
-        background-size: cover;
-        margin: 0;
-        font-family: 'Arial', sans-serif;
-        z-index: -1;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Popup Demo</title>
+    <!-- 引入外部样式文件 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <style>
+    /* 侧边用户弹窗样式 */
+    #userPopup {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 480px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      z-index: 1000;
+    }
+    /* 用户信息条目样式 */
+    .userInfoItem {
+      margin-bottom: 10px;
+      white-space: nowrap; /* 不换行 */
+      overflow: hidden; /* 隐藏溢出部分 */
+      text-overflow: ellipsis; /* 显示省略号 */
+    }
+    /* 鼠标悬停时显示全部内容 */
+    .userInfoItem:hover {
+      overflow: visible;
+      white-space: normal;
+    }
+    #documentDisplay {
+      width: 100%;
+      height: 450px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      box-sizing: border-box;
+      overflow: auto;
+      margin-top: 20px;
+    }
+    /* 场所展示和租用功能样式 */
+    .location {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        margin-left: 480px; /* 右移300px */
     }
 
-    #userPopup {
-        display: none;
+    .location h2 {
+        margin-top: 0;
+    }
+
+    .location-info {
+        margin-bottom: 10px;
+    }
+
+    .location-info label {
+        font-weight: bold;
+    }
+    .location img{
+        width: auto;
+        height: 480px;
+    }
+
+    .btn-book {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    /* 区分侧边栏位置颜色 */
+    .userPopup-background {
+        background-color: rgba(0, 0, 0, 0.2); /* 添加背景颜色 */
         position: fixed;
         top: 0;
-        left: 0;
+        left: 480px; /* 与侧边栏同宽 */
+        width: calc(100% - 480px); /* 剩余宽度 */
         height: 100%;
-        width: 300px;
-        background-color: #fff;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        padding: 20px;
-        z-index: 1000;
+        z-index: 999;
+        display: none; /* 初始隐藏 */
     }
-
-    /* Adjusted style to add margin-left for the main content */
-    #mainContent {
-        padding: 20px;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-around;
-        margin-left: 300px; /* Width of the sidebar */
+    #dialog {
+        display: none;
     }
-
-    .product-card {
-        width: 300px;
-        margin-bottom: 20px;
-        padding: 10px;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .product-card img {
-        width: 100%;
-        height: auto;
-    }
-
-    /* Rest of your styles remain unchanged */
-
-
-    /* 引入其他样式或者自定义动画效果 */
-
-</style>
+  </style>
 </head>
-
 <body>
+
+<div id="dialog" title="提示">
+    <p>设置成功！</p>
+</div>
 
 <!-- 侧边用户弹窗 -->
 <div id="userPopup" class="animated slideInLeft">
     <!-- 用户信息显示在这里 -->
-    <div id="userInfo"></div>
+    <div id="userInfo">
+        <!-- 用户信息条目 -->
+        <div class="userInfoItem" id="didItem" onclick="fetchUserData()">
+            <strong>DID:</strong>
+        </div>
+        <div class="userInfoItem" id="nicknameItem">
+            <strong>Nickname:</strong>
+        </div>
+        <div id="documentDisplay">
+            <!-- 大显示框内容 -->
+            <pre id="documentContent"></pre>
+        </div>
+    </div>
+</div>
+<!-- 区分侧边栏位置的背景 -->
+<div class="userPopup-background"></div>
+<!-- 场所展示和租用功能 -->
+<div class="location"id="class1">
+    <img src="../img/bg.jpg" alt="class_1">
+    <h2>会议室</h2>
+    <div class="location-info">
+        <label>Token ID:</label> <span id="tokenID_1">11</span><br>
+        <label id="U11" onclick="getUserByTokenID(11)">User:</label><br>
+        <label id="T11" onclick="getUseTimeByTokenID(11)">Use Time:</label>
+    </div>
+    <input type="text" id="renterTime11" placeholder="租用时长">
+    <button class="btn-book" onclick="setUser(11)">租用</button>
 </div>
 
-<!-- 主要商品展示区域 -->
-
-<div id="mainContent">
-    <!-- 商品信息将在这里动态渲染 -->
-    <!-- 示例：第一个商品 -->
-    <div class="product-card" id="product1">
-        <img src="./bg.jpg" alt="Product 1">
-        <h3>课室 1</h3>
-        <p>管理者：</p>
-        <p>使用者：</p>
-        <p>使用时间：</p>
-        <button class="details-btn" onclick="getProductDetails(1)">Details</button>
+<div class="location" id="class2" >
+    <img src="../img/bg.jpg" alt="class_2">
+    <h2>课室</h2>
+    <div class="location-info">
+        <label>Token ID:</label> <span id="tokenID_2">222</span><br>
+        <label id="U222" onclick="getUserByTokenID(222)">User:</label><br>
+        <label id="T222" onclick="getUseTimeByTokenID(222)">Use Time:</label>
     </div>
-
-    <!-- 重复展示其他商品 -->
-    <!-- ... -->
-    <div class="product-card" id="product2">
-        <img src="./bg.jpg" alt="Product 1">
-        <h3>课室 2</h3>
-        <p>管理者：</p>
-        <p>使用者：</p>
-        <p>使用时间：</p>
-        <button class="details-btn" onclick="getProductDetails(2)">Details</button>
-    </div>
-    <div class="product-card" id="product3">
-        <img src="./bg.jpg" alt="Product 1">
-        <h3>课室 2</h3>
-        <p>管理者：</p>
-        <p>使用者：</p>
-        <p>使用时间：</p>
-        <button class="details-btn" onclick="getProductDetails(3)">Details</button>
-    </div>
-
+    <input type="text" id="renterTime222" placeholder="租用时长">
+    <button class="btn-book" onclick="setUser(222)">租用</button>
 </div>
 
+<div class="location" id="class3">
+    <img src="../img/bg.jpg" alt="class_3">
+    <h2>休息室</h2>
+    <div class="location-info">
+        <label>Token ID:</label> <span id="tokenID_3">333</span><br>
+        <label id="U333" onclick="getUserByTokenID(333)">User:</label><br>
+        <label id="T333" onclick="getUseTimeByTokenID(333)">Use Time:</label>
+    </div>
+    <input type="text" id="renterTime333" placeholder="租用时长">
+    <button class="btn-book" onclick="setUser(333)">租用</button>
+</div>
 
-<!-- 引入自定义脚本 -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    // your_script.js
-    // 获取 URL 中的参数
+    // 切换侧边栏显示与隐藏
+    function toggleUserPopup() {
+        var userPopup = document.getElementById('userPopup');
+        if (userPopup.style.display === 'none') {
+            userPopup.style.display = 'block';
+        } else {
+            userPopup.style.display = 'none';
+        }
+    }
+
+    const jwt = localStorage.getItem("jwt");
     const urlParams = new URLSearchParams(window.location.search);
     const DID = urlParams.get('DID');
-    const priKey = urlParams.get('priKey');
-
-    // 在控制台输出，你可以根据需要使用这些值
-    console.log('DID:', DID);
-    console.log('priKey:', priKey);
-
-    function showUserInfo(user) {
-        const userInfo = $('#userInfo');
-
-        // 构建用户信息 HTML
-        const userHtml = `<h2>${user.username}</h2>
-                      <p>Email: ${user.email}</p>`;
-
-        // 将用户信息渲染到侧边弹窗
-        userInfo.html(userHtml);
-
-        // 显示用户弹窗
-        $('#userPopup').css('display', 'block');
+    // 发送请求获取用户数据
+    function fetchUserData() {
+        //toggleUserPopup();
+        $(document).ready(function() {
+            $.ajax({
+                url: '/userDetail',
+                method: 'POST',
+                data:{"DID":DID},
+                success: function(response) {
+                    console.log('receive is:',response)
+                    document.getElementById('didItem').innerHTML = '<strong>DID:</strong> ' + response.did;
+                    document.getElementById('nicknameItem').innerHTML = '<strong>Nickname:</strong> ' + response.nickname;
+                    // 更新document部分
+                    document.getElementById('documentContent').innerText = response.document;
+                    // 显示侧边栏
+                },
+                error: function(error) {
+                    console.error('Error fetching product data:', error);
+                }
+            });
+        });
     }
 
-    $(document).ready(function() {
-        // 发送 POST 请求获取商品数据
-        $.ajax({
-            url: '/Transaction', // 请替换为实际的后端接口地址
-            method: 'POST',
-            success: function(productData) {
-                // 渲染商品信息
-                renderProducts(productData);
-            },
-            error: function(error) {
-                console.error('Error fetching product data:', error);
+
+   function getUserByTokenID(tokenId) {
+       $(document).ready(function () {
+           // 发送 POST 请求获取商品数据
+           $.ajax({
+               url: '/getUser',
+               method: 'POST',
+               data: {"tokenId": tokenId},
+               success: function (response) {
+                   // 检查是否已经存在地址元素
+                   var userSpan = document.getElementById("userSpan_" + tokenId);
+                   if (userSpan) {
+                       // 如果已经存在，更新其内容
+                       userSpan.innerText = response.data;
+                   } else {
+                       // 如果不存在，创建新的地址元素并插入到指定位置
+                       userSpan = document.createElement("span");
+                       userSpan.setAttribute("id", "userSpan_" + tokenId);
+                       userSpan.innerText = response.data;
+                       // 找到"User"标签后面的兄弟节点，将新的<span>元素插入到其前面
+                       var useLabel = document.getElementById("U" + tokenId);
+                       useLabel.parentNode.insertBefore(userSpan, useLabel.nextSibling);
+                   }
+               },
+               error: function (error) {
+                   console.error('Error fetching product data:', error);
+               }
+           });
+       });
+   }
+    function getUseTimeByTokenID(tokenId){
+        $(document).ready(function () {
+            // 发送 POST 请求获取商品数据
+            $.ajax({
+                url: '/getUserTime', // 请替换为实际的后端接口地址
+                method: 'POST',
+                data: {"tokenId": tokenId},
+                success: function (response) {
+                    var time = response.data;
+                    startCountdown(time/1000 ,tokenId);
+                },
+                error: function (error) {
+                    console.error('Error fetching product data:', error);
+                }
+            });
+        });
+    }
+    function startCountdown(useTime, tokenId) {
+        // 删除旧的倒计时元素
+        var oldCountdownElement = document.getElementById('countdown'+ tokenId);
+        if (oldCountdownElement) {
+            oldCountdownElement.parentNode.removeChild(oldCountdownElement);
+        }
+
+        var countdownElement = document.createElement('span');
+        countdownElement.setAttribute('id', 'countdown'+tokenId);
+        countdownElement.innerHTML = '倒计时: ' + useTime;
+        document.getElementById('T'+ tokenId).appendChild(countdownElement);
+        var countdownInterval = setInterval(function() {
+            useTime--; // 倒计时减1秒
+            countdownElement.innerHTML = '倒计时: ' + useTime;
+
+            if (useTime <= 0) {
+                clearInterval(countdownInterval); // 倒计时结束，清除定时器
+                countdownElement.innerHTML = 'Available';
             }
-        });
-
-        // 模拟用户登录后显示用户信息
-        showUserInfo({
-            username: DID,
-            email: 'June@SZU',
-            // 其他用户信息...
-        });
-    });
-    // 渲染商品信息
-    function renderProducts(productData) {
-        const mainContent = $('#mainContent');
-
-        // 循环遍历商品数据，渲染到页面
-        productData.slice(0, 10).forEach((product, index) => {
-            const productCard = `<div class="product-card" id="product${index + 1}">
-                                <img src="placeholder.jpg" alt="${product.name}">
-                                <h3>${product.name}</h3>
-                                <p>${product.description}</p>
-                                <button class="details-btn" onclick="getProductDetails(${index + 1})">Details</button>
-                            </div>`;
-            mainContent.append(productCard);
-        });
+        }, 1000); // 每秒更新一次倒计时
     }
 
-    // 获取商品详情
-    function getProductDetails(productId) {
-        // 发送 POST 请求，获取商品详情数据
-        $.ajax({
-            url: '/Transaction', // 请替换为实际的后端接口地址
-            method: 'POST',
-            data: { Address: DID, function: 'ownerOf', tokenId: '11'  },
-            success: function(productDetails) {
-                // 处理商品详情数据，例如更新弹窗中的内容
-                updateProductDetails(productId, productDetails);
-            },
-            error: function(error) {
-                console.error('Error fetching product details:', error);
-            }
+    function setUser(tokenId) {
+        $(document).ready(function () {
+            var renterTime = document.getElementById('renterTime'+tokenId).value;
+            // 发送 POST
+            $.ajax({
+                url: '/setUser',
+                method: 'POST',
+                data: {"DID": DID, "tokenId": tokenId, "renterTime": renterTime, "jwt":jwt},
+                success: function (response) {
+                    // 如果成功设置用户，弹出提示框
+                    if (response.code === '0') {
+                        alert("申请成功！")
+                    } else {
+                        alert("设置失败，请重试！");
+                    }
+
+                },
+                error: function (error) {
+                    console.error('Error fetching product data:', error);
+                }
+            });
         });
-    }
-
-    // 更新商品详情弹窗内容
-    function updateProductDetails(productId, details) {
-        const productCard = document.getElementById('product' + productId);
-
-        // Update product information based on received details
-        productCard.querySelector('h3').innerText = details;
-        productCard.querySelector('p').innerText = details;
-        // You can update other elements as needed
-
-        // Optionally, you can add animations or other effects
     }
 
 </script>

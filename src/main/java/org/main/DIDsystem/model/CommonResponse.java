@@ -10,16 +10,19 @@ import lombok.NoArgsConstructor;
 public class CommonResponse {
 
     public static final String OK = "0";
+    public static final String FAIL = "1";
 
     private String code;
     private String message;
     private Object data;
 
-    public static CommonResponse ok(Object data){
-        return new CommonResponse(OK, "",data);
+
+
+    public static CommonResponse ok(String msg,Object data){
+        return new CommonResponse(OK, msg, data);
     }
 
-    public static CommonResponse fail(String code, Exception ex){
-        return new CommonResponse(code, ex.getMessage(), null);
+    public static CommonResponse fail(String failMsg){
+        return new CommonResponse(FAIL, failMsg, null);
     }
 }

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-image: url('../img/bg2.jpg'); /* 背景图片的 URL */
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.8); /* 白色半透明背景 */
+            padding: 20px;
+            border-radius: 10px;
+            width: 500px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* 添加阴影效果 */
+        }
+        input[type="text"], input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        textarea {
+            width: calc(100% - 20px);
+            height: 350px; /* 输出框高度 */
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            resize: none; /* 禁止调整大小 */
+            font-family: monospace; /* 使用等宽字体以保持对齐 */
+            white-space: pre-wrap; /* 保留换行符并自动换行 */
+
+        }
+        button {
+            width: calc(100% - 20px);
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>User Registration</h2>
+    <form id="registrationForm">
+        <label for="username">Nickname:</label>
+        <input type="text" id="username" required>
+        <label for="userID">School ID:</label>
+        <input type="password" id="userID" required>
+        <label for="email">Email:</label>
+        <input type="text" id="email" required>
+        <label for="grade">Admission Grade:</label>
+        <select id="grade" required>
+            <option value="">--Select Grade--</option>
+            <option value="2020">2020</option>
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+        </select>
+        <button type="submit">Register</button>
+    </form>
+    <textarea id="didOutput" placeholder="Your registered DID will be displayed here..." readonly></textarea>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // 表单提交事件
+        $('#registrationForm').submit(function(e) {
+            e.preventDefault(); // 阻止表单默认提交行为
+
+            // 获取表单数据
+            const nickname = $('#username').val();
+            const userID = $('#userID').val();
+            const email = $('#email').val();
+            const grade = $('#grade').val();
+
+            // 发送 AJAX 请求到 '/login'
+            $.ajax({
+                url: '/register',
+                method: 'POST',
+                data: { "nickname":nickname, "userID":userID,"email": email, "grade":grade },
+                success: function(response) {
+                    console.log('response code :',response.code)
+                    console.log('response data :',response.data)
+                    if (response.code === '0') {
+                        $('#didOutput').val(response.data);
+                    } else {
+                        // FAIL
+                        console.error('Failure:', response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error logging in:', error);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

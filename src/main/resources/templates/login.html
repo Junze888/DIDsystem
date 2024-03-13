@@ -95,11 +95,13 @@
         <p id="loggedInMsg" style="display: none;">Login successful! Welcome</p>
         <p id="loginErrorMsg" class="error" style="display: none;">Login failed. Please check your DID and PrivateKey.</p>
         <p id="catchErrorMsg" class="error" style="display: none;">Catch error.</p>
+        <p>No DID? Please <a href="/register">register</a>.</p>
     </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+
     $(document).ready(function() {
         // 表单提交事件
         $('#loginForm').submit(function(e) {
@@ -111,41 +113,40 @@
             const isAdmin = false; // 这里可能需要根据实际情况设置 isAdmin 的值
 
             // 发送 AJAX 请求
-            $.ajax({
-                url: '/login',
-                method: 'POST',
-                data: { DID, priKey, isAdmin },
-                success: function(response) {
-                    if (response === true) {
-                        // 登录成功
-                        $('#loggedInMsg').show();
-                        $('#loginErrorMsg').hide();
-                        $('#catchErrorMsg').hide();
+                $.ajax({
+                    url: '/login',
+                    method: 'POST',
+                    data: { "DID":DID, "priKey":priKey, "isAdmin":isAdmin },
+                    success: function(response) {
+                        console.log('response code :',response.code)
+                        console.log('response data :',response.data)
+                        if (response.code === '0') {
+                            // OK
+                            // 登录成功
+                            const jwt = localStorage.setItem("jwt", response.data);
+                            $('#loggedInMsg').show();
+                            $('#loginErrorMsg').hide();
+                            $('#catchErrorMsg').hide();
 
-                        // 你可以在这里添加其他逻辑，如跳转到欢迎页面
-                        window.location.href = '/welcome?DID=' + encodeURIComponent(DID) + '&priKey=' + encodeURIComponent(priKey);
-                    } else {
-                        // 登录失败
-                        $('#loggedInMsg').hide();
-                        $('#loginErrorMsg').show();
-                        $('#catchErrorMsg').hide();
+                            // 你可以在这里添加其他逻辑，如跳转到欢迎页面
+                            window.location.href = '/welcome?DID=' + encodeURIComponent(DID);
+                            console.log('Success:', response.message);
+                        } else {
+                            // FAIL
+                            // 登录失败
+                            $('#loggedInMsg').hide();
+                            $('#loginErrorMsg').show();
+                            $('#catchErrorMsg').hide();
+                            console.error('Failure:', response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
                     }
-                },
-                error: function(error) {
-                    // 发生错误
-                    console.error('error login', error);
-                    $('#loggedInMsg').hide();
-                    $('#loginErrorMsg').hide();
-                    $('#catchErrorMsg').show();
-                }
-            });
+                });
         });
     });
 </script>
-
-
-
 </body>
 
-</body>
 </html>
