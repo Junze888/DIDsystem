@@ -20,6 +20,32 @@
       padding: 20px;
       z-index: 1000;
     }
+    /* 搜索框和按钮样式 */
+    .search-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+        width: 800px;
+        margin-left: 600px;
+        margin-top: 10px;
+    }
+
+    #searchInput {
+        width: 80%; /* 调整宽度，使其占据父容器的大部分 */
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
+
+    .btn-search {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
     /* 用户信息条目样式 */
     .userInfoItem {
       margin-bottom: 10px;
@@ -42,18 +68,21 @@
       margin-top: 20px;
     }
     /* 场所展示和租用功能样式 */
-    .location {
+    .container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 创建三列，每列宽度相等 */
+        grid-gap: 10px;
+        margin-left: 480px; /* 将整个网格容器右移 480px */
+    }
+    .location,.location2 {
         border: 1px solid #ccc;
         padding: 10px;
         margin-bottom: 20px;
         border-radius: 5px;
-        margin-left: 480px; /* 右移300px */
     }
-
     .location h2 {
         margin-top: 0;
     }
-
     .location-info {
         margin-bottom: 10px;
     }
@@ -62,10 +91,17 @@
         font-weight: bold;
     }
     .location img{
-        width: auto;
-        height: 480px;
+        width: 450px;
+        height: 280px;
     }
-
+    .location1 img{
+        width: 450px;
+        height: 280px;
+    }
+    .location2 img{
+        width: 450px;
+        height: 280px;
+    }
     .btn-book {
         background-color: #007bff;
         color: #fff;
@@ -116,40 +152,36 @@
 <!-- 区分侧边栏位置的背景 -->
 <div class="userPopup-background"></div>
 <!-- 场所展示和租用功能 -->
-<div class="location"id="class1">
-    <img src="../img/bg.jpg" alt="class_1">
-    <h2>会议室</h2>
-    <div class="location-info">
-        <label>Token ID:</label> <span id="tokenID_1">11</span><br>
-        <label id="U11" onclick="getUserByTokenID(11)">User:</label><br>
-        <label id="T11" onclick="getUseTimeByTokenID(11)">Use Time:</label>
-    </div>
-    <input type="text" id="renterTime11" placeholder="租用时长">
-    <button class="btn-book" onclick="setUser(11)">租用</button>
+<div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search..." />
+    <button class="btn-search" onclick="search()">SEARCH</button>
 </div>
 
-<div class="location" id="class2" >
-    <img src="../img/bg.jpg" alt="class_2">
-    <h2>课室</h2>
-    <div class="location-info">
-        <label>Token ID:</label> <span id="tokenID_2">222</span><br>
-        <label id="U222" onclick="getUserByTokenID(222)">User:</label><br>
-        <label id="T222" onclick="getUseTimeByTokenID(222)">Use Time:</label>
+<div class="container">
+    <div class="location" id="class1">
+        <img src="room.jpg" alt="class_1">
+        <h2>Conference Room</h2>
+        <div class="location-info">
+            <label>Token ID:</label> <span id="tokenID_1">11</span><br>
+            <label>Admin:</label> <span id="tokenI" style="color: blue;">0x36651e8ae6dfff2cc2181245622437ee1c026552</span><br>
+            <label id="U11" onclick="getUserByTokenID(11)">User:</label><span id="tk"> 0x0000000000000000000000000000000000000000</span><br>
+            <label id="T11" onclick="getUseTimeByTokenID(11)">Use Time:</label><span id="t"> Available</span>
+        </div>
+        <input type="text" id="renterTime11" placeholder="Duration">
+        <button class="btn-book" onclick="setUser(11)">REQUEST</button>
     </div>
-    <input type="text" id="renterTime222" placeholder="租用时长">
-    <button class="btn-book" onclick="setUser(222)">租用</button>
-</div>
-
-<div class="location" id="class3">
-    <img src="../img/bg.jpg" alt="class_3">
-    <h2>休息室</h2>
-    <div class="location-info">
-        <label>Token ID:</label> <span id="tokenID_3">333</span><br>
-        <label id="U333" onclick="getUserByTokenID(333)">User:</label><br>
-        <label id="T333" onclick="getUseTimeByTokenID(333)">Use Time:</label>
+    <div class="location2" id="class3">
+        <img src="yumaoqiu.png" alt="class_3">
+        <h2>Badminton Court</h2>
+        <div class="location-info">
+            <label>Token ID:</label> <span id="tokenID_3">22</span><br>
+            <label>Admin:</label> <span id="tokenID" style="color: blue;">0x36651e8ae6dfff2cc2181245622437ee1c026552</span><br>
+            <label id="U333" onclick="getUserByTokenID(333)">User:</label><span id="tok"> 0x4ef16c0f777f90741dc33ff7a25edc21f9468eb3</span><br>
+            <label id="T333" onclick="getUseTimeByTokenID(333)">Use Time:</label><span id="to"> 1h 09min</span>
+        </div>
+        <input type="text" id="renterTime333" placeholder="Duration">
+        <button class="btn-book" onclick="setUser(333)">REQUEST</button>
     </div>
-    <input type="text" id="renterTime333" placeholder="租用时长">
-    <button class="btn-book" onclick="setUser(333)">租用</button>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -250,7 +282,7 @@
         document.getElementById('T'+ tokenId).appendChild(countdownElement);
         var countdownInterval = setInterval(function() {
             useTime--; // 倒计时减1秒
-            countdownElement.innerHTML = '倒计时: ' + useTime;
+            countdownElement.innerHTML = 'Remaining 1h 12min';
 
             if (useTime <= 0) {
                 clearInterval(countdownInterval); // 倒计时结束，清除定时器
